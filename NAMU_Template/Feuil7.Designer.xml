@@ -1,0 +1,3 @@
+﻿<hostitem:hostItem hostitem:baseType="Microsoft.Office.Tools.Excel.WorksheetBase" hostitem:namespace="NAMU_Template" hostitem:className="Feuil7" hostitem:identifier="Feuil7" hostitem:primaryCookie="Feuil7" hostitem:factoryType="Microsoft.Office.Tools.Excel.Factory" hostitem:startupIndex="8" xmlns:hostitem="http://schemas.microsoft.com/2004/VisualStudio/Tools/Applications/HostItem.xsd">
+  <hostitem:hostControl hostitem:name="TableCombs" hostitem:identifier="TableCombs" hostitem:type="Microsoft.Office.Tools.Excel.ListObject" hostitem:primaryCookie="Feuil7:TableCombs" hostitem:extenderCookie="" hostitem:modifier="Internal" />
+</hostitem:hostItem>
