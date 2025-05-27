@@ -33,7 +33,7 @@ These tools aim to strengthen global surveillance of antimicrobial use and suppo
 
 The tools are provided "as is".
 
-The national tool is intended for use by designated national authorities. Some functionalities may be useful only to GLASS NAMU national focal points.
+The national tool is intended for use primarly by designated national authorities. Some functionalities may be useful only to GLASS NAMU national focal points.
 
 ---
 

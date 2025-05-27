@@ -1,0 +1,24 @@
+WHO_NAMU_Template.xlsx
+© Copyright 2025 World Health Organization
+The content of this file is available under the Creative Commons Attribution-NonCommercial-ShareAlike 3.0 IGO licence (CC-BY-NC-SA-3.0-IGO https://creativecommons.org/licenses/by-nc-sa/3.0/igo/).   
+Suggested citation. Insert title. Geneva: World Health Organization; 2025. Insert handle URI. Licence: CC-BY-NC-SA-3.0-IGO.  
+If you create a translation or adaptation of this work, you should add the following disclaimer along with the suggested citation: “This translation/adaptation was not created by the World Health Organization (WHO). WHO is not responsible for the content or accuracy of this translation/adaptation. The original English edition shall be the binding and authentic edition."
+Any mediation relating to disputes arising under the licence shall be conducted in accordance with the mediation rules of the World Intellectual Property Organization https://www.wipo.int/amc/en/mediation/rules.
+To submit requests for commercial use and queries on rights and licensing, see https://www.who.int/copyright
+
+Third-parties materials
+This file contains an extract of the ATC/DDD index (worksheets 'ATC', 'DDD', 'DDD Combinations') developed by the WHO Collaborating Centre for Drug Statistics Methodology, Oslo, Norway.
+© Copyright WHO Collaborating Centre for Drug Statistics Methodology, Oslo, Norway, https://atcddd.fhi.no/.
+Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed.
+Disclaimer
+The WHO Collaborating Centre for Drug Statistics Methodology makes every effort to ensure the quality of the information available on this website and updates the information regularly.
+The Centre cannot guarantee and assumes no legal liability or responsibility for the accuracy, completeness or interpretation of the information."
+
+All other files (except if explicitly mentioned)
+© Copyright 2025 World Health Organization
+BSD-3-Clause
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission."
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
