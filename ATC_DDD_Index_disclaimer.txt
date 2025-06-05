@@ -3,5 +3,5 @@ WHO Collaborating Centre for Drug Statistics Methodology, Oslo, Norway.
 Use of all or parts of the material requires reference to the WHO Collaborating Centre for Drug Statistics Methodology. Copying and distribution for commercial purposes is not allowed. Changing or manipulating the material is not allowed.
 
 Disclaimer
-The WHO Collaborating Centre for Drug Statistics Methodology makes every effort to ensure the quality of the information available on this website and updates the information regularly.
+The WHO Collaborating Centre for Drug Statistics Methodology makes every effort to ensure the quality of the information in the ATC/DDD index and updates it annually.
 The Centre cannot guarantee and assumes no legal liability or responsibility for the accuracy, completeness or interpretation of the information.
