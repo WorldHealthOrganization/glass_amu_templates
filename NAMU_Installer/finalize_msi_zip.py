@@ -50,15 +50,16 @@ if __name__ == "__main__":
         args = sys.argv
         log.info(args)
         orig_path = args[1]
+        msi_path = os.path.basename(orig_path)
         log.info(orig_path)
         dev_env = "Release"
         if len(args)>2:
             dev_env = args[2]
         log.info(dev_env)
         cfg = load_config()
-        new_msi_path = rename_msi_file(orig_path, dev_env, cfg)
-        log.info(f"Msi file renamed to {new_msi_path}.")
-        zip_path = create_zip_file(new_msi_path, dev_env, cfg)
+        # new_msi_path = rename_msi_file(orig_path, dev_env, cfg)
+        # log.info(f"Msi file renamed to {new_msi_path}.")
+        zip_path = create_zip_file(msi_path, dev_env, cfg)
         log.info(f"Zip file {zip_path} created.")
         sys.stdout.writelines(f"Postbuild script successful=>{zip_path}.")
         sys.exit(0)
