@@ -703,6 +703,7 @@ namespace NAMU_Template.Models
             if (manCntry.IsMissing)
             {
                 SetValidate(true, MANUFACTURER_COUNTRY_VALIDATION);
+                return;
             }
             if (ThisWorkbook.CountryDataDict.ContainsKey(manCntry.Value))
             {
