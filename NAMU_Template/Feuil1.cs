@@ -494,7 +494,7 @@ namespace NAMU_Template
             catch (Exception ex)
             {
                 // Handle exceptions
-                MessageBox.Show($"An error occurred: {ex.Message}");
+                MessageBox.Show($"An unexpected error occurred: {ex.Message}");
             }
             finally
             {
