@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 import configparser
+from datetime import datetime as dt
 import logging
 import os
 import os.path
@@ -38,7 +39,7 @@ def create_zip_file(msi_file: str, dev_env:str, cfg: configparser.ConfigParser):
     log.info("Build zip file")
     version = cfg["Version"]["Version"]
     subversion = cfg["Version"]["Subversion"]
-    zip_path = f"NAMU_installer-{version}v{subversion}-release.zip" if dev_env=="Release" else f"NAMU_installer-{version}v{subversion}-debug.zip"
+    zip_path = f"NAMU_installer-{version}v{subversion}-release.zip" if dev_env=="Release" else f"NAMU_installer-{version}v{subversion}_{dt.now():%Y%m%d%H%M}-debug.zip"
     with ZipFile(zip_path, 'x') as fzip:
         fzip.write("setup.exe")
         fzip.write(msi_file)
