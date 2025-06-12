@@ -139,7 +139,7 @@ namespace NAMU_Template.Data_Parsing
                 if (String.IsNullOrEmpty(ctry) || year==null || (total==null && community==null && hospital==null))
                 {
                     {
-                        MessageBox.Show($"Missing information for Population at row {r}.");
+                        MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Missing information for Population at row {r}.");
                         return false;
                     }
                 }
@@ -404,7 +404,7 @@ namespace NAMU_Template.Data_Parsing
                     if (existingPop.ATCClass == "ALL" || pop.ATCClass == "ALL" ||
                         existingPop.Sector == HealthSector.Total || pop.Sector == HealthSector.Total)
                     {
-                        MessageBox.Show("Only one population per country, year, antimicrobial class, and sector.");
+                        MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Provide only one population figure per country, year, antimicrobial class, and sector.");
                         return false;
                     }
                 }
@@ -443,21 +443,28 @@ namespace NAMU_Template.Data_Parsing
                     string country = CommonParser.ParseCountryISO3(Convert.ToString(values[row, 1]), "Country", errorStatus, ref variableErrors, true);
                     if (errorStatus.Status > EntityStatus.OK)
                     {
-                        MessageBox.Show($"Country {country} is not valid or not provided in the row {row}");
+                        if (string.IsNullOrEmpty(country))
+                        {
+                            MessageBox.Show($"In {TemplateFormat.AVAILABILITY_SHEETNAME} worksheet: Country {country} is not provided at row {row}.");
+                        }
+                        else {
+                            MessageBox.Show($"In {TemplateFormat.AVAILABILITY_SHEETNAME} worksheet: Country {country} is not valid at row {row}.");
+                        }
+                        
                         return false;
                     }
 
                     string? atcClass = CommonParser.ParseATCClass(Convert.ToString(values[row, 2]), "ATC Class", errorStatus, ref variableErrors, true);
                     if (errorStatus.Status > EntityStatus.OK)
                     {
-                        MessageBox.Show($"ATC Class {atcClass} is not valid in row {row}");
+                        MessageBox.Show($"In {TemplateFormat.AVAILABILITY_SHEETNAME} worksheet: ATC Class {atcClass} is not valid at row {row}.");
                         return false;
                     }
 
                     HealthSector? sectorTmp = CommonParser.ParseHealthSector(Convert.ToString(values[row, 3]), "Sector", errorStatus, ref variableErrors, true);
                     if (sectorTmp == null)
                     {
-                        MessageBox.Show($"Sector {sectorTmp} is not valid in row {row}");
+                        MessageBox.Show($"In {TemplateFormat.AVAILABILITY_SHEETNAME} worksheet: Sector {sectorTmp} is not valid at row {row}.");
                         return false;
                     }
                     HealthSector sector = (HealthSector)sectorTmp;
@@ -501,7 +508,7 @@ namespace NAMU_Template.Data_Parsing
                         string levelCode = CommonParser.ParseString(Convert.ToString(values[row, 4]), "Level", errorStatus, ref variableErrors, true);
                         if (errorStatus.Status > EntityStatus.OK)
                         {
-                            MessageBox.Show($"Level {levelCode} is not valid in row {row}");
+                            MessageBox.Show($"In {TemplateFormat.AVAILABILITY_SHEETNAME} worksheet: Level {levelCode} is not valid at row {row}.");
                             return false;
                         }
                         HealthLevel level;
@@ -511,7 +518,7 @@ namespace NAMU_Template.Data_Parsing
                         }
                         catch (Exception e)
                         {
-                            MessageBox.Show($"Level {levelCode} is not valid in row {row}");
+                            MessageBox.Show($"In {TemplateFormat.AVAILABILITY_SHEETNAME} worksheet: Level {levelCode} is not valid at row {row}.");
                             return false;
                         }
 
@@ -813,6 +820,7 @@ namespace NAMU_Template.Data_Parsing
             // Call ParsePackData and return the result
             return ParsePackData(dataSheet, years, productData, populationData, availabilityData, es);
         }
+
         private static List<ProductConsumption> ParsePackData(Worksheet sheet, int[] years,
         List<Product> productData, List<Population> populationData,
         List<DataAvailability> availabilityData, ErrorStatus es)
@@ -1040,14 +1048,6 @@ namespace NAMU_Template.Data_Parsing
             }
             return val;
         }
-        
-        
-
-       
-
-        
-
-        
 
         public static DataField<T> InitializeDataField<T>(string varName, bool mandatory, int colIndex)
         {
@@ -1109,30 +1109,36 @@ namespace NAMU_Template.Data_Parsing
             Product pr = new Product();
             pr.ProductLineNo = excelRow;
 
-            //  Step 2: Convert values[index, col] to a string where needed
-            ParseProductCountryISO3(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_COUNTRY_COL_IDX]), pr);
-            ParseProductId(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_PRODUCT_ID_COL_IDX]), pr);
-            ParseProductLabel(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_LABEL_COL_IDX]), pr);
-            ParseProductPackSize(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_PACKSIZE_COL_IDX]), pr);
-            ParseProductRoa(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_ROA_COL_IDX]), pr);
-            ParseProductStrength(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_STRENGTH_COL_IDX]), pr);
-            ParseProductStrengthUnit(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_STRENGTH_UNIT_COL_IDX]), pr);
-            ParseProductConcentrationVolume(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_CONCENTRATION_COL_IDX]), pr);
-            ParseProductVolume(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_VOLUME_COL_IDX]), pr);
-            ParseProductAtc5(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_ATC5_COL_IDX]), pr);
-            ParseProductSalt(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_SALT_COL_IDX]), pr);
-            ParseProductCombination(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_COMBINATION_COL_IDX]), pr);
-            ParseProductPaediatrics(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_PAEDIATRIC_COL_IDX]), pr);
-            ParseProductForm(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_FORM_COL_IDX]), pr);
-            ParseProductOrigin(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_ORIGIN_COL_IDX]), pr);
-            ParseProductManufacturerCountryISO3(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_MAN_COUNTRY_COL_IDX]), pr);
-            ParseProductMarketAuthHolder(values[index + 1, TemplateFormat.DATA_SHEET_MAH_COL_IDX], pr);
-            ParseProductGenerics(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_GENERICS_COL_IDX]), pr);
-            ParseProductName(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_PRODUCT_NAME_COL_IDX]), pr);
-            ParseProductIngredients(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_INGREDIENTS_COL_IDX]), pr);
-            ParseProductYearAuthorization(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_YEAR_AUTHORIZATION_COL_IDX]), pr);
-            ParseProductYearWithdrawal(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_YEAR_WITHDRAWAL_COL_IDX]), pr);
-            ParseProductSector(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_SECTOR_COL_IDX]), pr);
+            try
+            {
+                ParseProductCountryISO3(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_COUNTRY_COL_IDX]), pr);
+                ParseProductId(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_PRODUCT_ID_COL_IDX]), pr);
+                ParseProductLabel(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_LABEL_COL_IDX]), pr);
+                ParseProductPackSize(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_PACKSIZE_COL_IDX]), pr);
+                ParseProductRoa(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_ROA_COL_IDX]), pr);
+                ParseProductStrength(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_STRENGTH_COL_IDX]), pr);
+                ParseProductStrengthUnit(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_STRENGTH_UNIT_COL_IDX]), pr);
+                ParseProductConcentrationVolume(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_CONCENTRATION_COL_IDX]), pr);
+                ParseProductVolume(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_VOLUME_COL_IDX]), pr);
+                ParseProductAtc5(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_ATC5_COL_IDX]), pr);
+                ParseProductSalt(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_SALT_COL_IDX]), pr);
+                ParseProductCombination(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_COMBINATION_COL_IDX]), pr);
+                ParseProductPaediatrics(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_PAEDIATRIC_COL_IDX]), pr);
+                ParseProductForm(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_FORM_COL_IDX]), pr);
+                ParseProductOrigin(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_ORIGIN_COL_IDX]), pr);
+                ParseProductManufacturerCountryISO3(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_MAN_COUNTRY_COL_IDX]), pr);
+                ParseProductMarketAuthHolder(values[index + 1, TemplateFormat.DATA_SHEET_MAH_COL_IDX], pr);
+                ParseProductGenerics(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_GENERICS_COL_IDX]), pr);
+                ParseProductName(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_PRODUCT_NAME_COL_IDX]), pr);
+                ParseProductIngredients(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_INGREDIENTS_COL_IDX]), pr);
+                ParseProductYearAuthorization(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_YEAR_AUTHORIZATION_COL_IDX]), pr);
+                ParseProductYearWithdrawal(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_YEAR_WITHDRAWAL_COL_IDX]), pr);
+                ParseProductSector(Convert.ToString(values[index + 1, TemplateFormat.DATA_SHEET_SECTOR_COL_IDX]), pr);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"An unexpected error occurred when parsing product at row {pr.ProductLineNo}: {e.Message}");
+            }
             return pr;
         }
 
@@ -1646,38 +1652,36 @@ namespace NAMU_Template.Data_Parsing
 
             string errMsg;
 
-            // Check if the value is empty
-            try
-            {
-                string value2 = ParseNonEmptyString(value).ToUpper();
-                try
-                {
-                    string value3 = value2.ToUpper();
-                    Salt salt = ParseSalt(value3);
-                    df.InputValue = value;
-                    df.Value = salt;
-                    df.IsValid = true;
-                    pr.SetField(Product.SALT_FIELD, df);
-                }
-                catch (ArgumentException)
-                {
-                    // Add an error message to the product
-                    errMsg = $"{Product.SALT_FIELD} value is invalid.";
-                    pr.AddErrorMsgs(errMsg);
-                    df.InputValue = value;
-                    df.IsValid = false;
-                    pr.SetField(Product.SALT_FIELD, df);
-                }
-            }
-            catch (ArgumentException)
-            {
-                // Add an error message to the product
+            if (string.IsNullOrEmpty(value)) { // set default salt XXXX
                 var defaultSalt = "XXXX";
                 Salt salt = ParseSalt(defaultSalt);
                 df.InputValue = value;
                 df.Value = salt;
                 df.IsValid = true;
                 df.IsMissing = true;
+                pr.SetField(Product.SALT_FIELD, df);
+                return;
+            }
+
+            // Check if the value is empty
+            
+            string value2 = ParseNonEmptyString(value).ToUpper();
+            try
+            {
+                string value3 = value2.ToUpper();
+                Salt salt = ParseSalt(value3);
+                df.InputValue = value;
+                df.Value = salt;
+                df.IsValid = true;
+                pr.SetField(Product.SALT_FIELD, df);
+            }
+            catch (ArgumentException)
+            {
+                // Add an error message to the product
+                errMsg = $"{Product.SALT_FIELD} value is invalid.";
+                pr.AddErrorMsgs(errMsg);
+                df.InputValue = value;
+                df.IsValid = false;
                 pr.SetField(Product.SALT_FIELD, df);
             }
         }
@@ -1837,7 +1841,7 @@ namespace NAMU_Template.Data_Parsing
             // Convert cellValue to string safely
             string value = Convert.ToString(cellValue)?.Trim();
 
-            DataField<string> df = InitializeDataField<string>(Product.MANUFACTURER_COUNTRY_FIELD, true, TemplateFormat.DATA_SHEET_MAN_COUNTRY_COL_IDX);
+            DataField<string> df = InitializeDataField<string>(Product.MANUFACTURER_COUNTRY_FIELD, false, TemplateFormat.DATA_SHEET_MAN_COUNTRY_COL_IDX);
 
             string errMsg;
 
