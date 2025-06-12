@@ -630,12 +630,19 @@ namespace NAMU_Template.Models
             DataField<MeasureUnit> uni_data = (DataField<MeasureUnit>)DataFieldValues[STRENGTH_UNIT_FIELD];
             if (str_data.IsValid && uni_data.IsValid)
             {
-                if (str_data.Value <= 0)
+                if (str_data.Value < 0)
                 {
                     SetValidate(false, STRENGTH_VALIDATION);
                     AddErrorMsgs("STRENGTH must be positive");
                     return;
                 }
+                if (str_data.Value == 0)
+                {
+                    SetValidate(true, STRENGTH_VALIDATION);
+                    AddInfoMsg("STRENGTH is 0. Calculated amount will be 0.");
+                    return;
+                }
+
                 this.Strength = str_data.Value;
                 this.StrengthUnit = uni_data.Value;
                 SetValidate(true, STRENGTH_VALIDATION);
