@@ -29,7 +29,7 @@ namespace AMU_Template.Models
         }
     }
 
-    public abstract class Medicine
+    public abstract class BaseMedicine
     {
         public abstract string UniqueId { get; }
 
@@ -50,8 +50,5 @@ namespace AMU_Template.Models
         public Amount? DDD { get; set; }
 
         public Decimal NbDDD { get; set; }
-
-
-
     }
 }
