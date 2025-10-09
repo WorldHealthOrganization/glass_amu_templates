@@ -10,6 +10,8 @@ using Excel = Microsoft.Office.Interop.Excel;
 using NAMU_Template.Models;
 using NAMU_Template.Constants;
 using AMU_Template.Constants;
+using AMU_Template.Helpers;
+
 
 
 namespace NAMU_Template.Data_Export
@@ -1002,7 +1004,7 @@ namespace NAMU_Template.Data_Export
             for (int i = 0; i < consolidatedAtcConsData.Count; i += batchSize)
             {
                 var batch = consolidatedAtcConsData.Skip(i).Take(batchSize).ToArray(); // Jagged array (object[][])
-                var batch2D = ConvertTo2DArray(batch); // Convert to 2D array (object[,])
+                var batch2D = DataHelper.ConvertTo2DArray(batch); // Convert to 2D array (object[,])
 
                 var range = worksheet.Range[worksheet.Cells[row, 1], worksheet.Cells[row + batch2D.GetLength(0) - 1, headers.Length]];
                 range.Value = batch2D; // Write the 2D array to the range
@@ -1194,7 +1196,7 @@ namespace NAMU_Template.Data_Export
             for (int i = 0; i < consolidatedData.Count; i += batchSize)
             {
                 var batch = consolidatedData.Skip(i).Take(batchSize).ToArray(); // Jagged array (object[][])
-                var batch2D = ConvertTo2DArray(batch); // Convert to 2D array (object[,])
+                var batch2D = DataHelper.ConvertTo2DArray(batch); // Convert to 2D array (object[,])
 
                 var range = worksheet.Range[worksheet.Cells[row, 1], worksheet.Cells[row + batch2D.GetLength(0) - 1, headers.Length]];
                 range.Value = batch2D; // Write the 2D array to the range
@@ -1271,21 +1273,21 @@ namespace NAMU_Template.Data_Export
             return data;
         }
 
-        private static object[,] ConvertTo2DArray(object[][] jaggedArray)
-        {
-            int rows = jaggedArray.Length;
-            int cols = jaggedArray[0].Length;
-            object[,] result = new object[rows, cols];
+        //private static object[,] ConvertTo2DArray(object[][] jaggedArray)
+        //{
+        //    int rows = jaggedArray.Length;
+        //    int cols = jaggedArray[0].Length;
+        //    object[,] result = new object[rows, cols];
 
-            for (int i = 0; i < rows; i++)
-            {
-                for (int j = 0; j < cols; j++)
-                {
-                    result[i, j] = jaggedArray[i][j];
-                }
-            }
+        //    for (int i = 0; i < rows; i++)
+        //    {
+        //        for (int j = 0; j < cols; j++)
+        //        {
+        //            result[i, j] = jaggedArray[i][j];
+        //        }
+        //    }
 
-            return result;
-        }
+        //    return result;
+        //}
     }
 }
