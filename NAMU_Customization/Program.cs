@@ -120,6 +120,7 @@ namespace AddCustomizationCustomAction
                 try
                 {
                     File.Delete(LogLocation);
+                    File.Delete("Customize_NAMU.InstallState");
                 }
                 catch (Exception)
                 {
