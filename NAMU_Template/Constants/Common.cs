@@ -99,22 +99,5 @@ namespace NAMU_Template.Constants
             }
             return value;
         }
-    }
-
-    public enum VStatus
-    {
-        NA = 0,
-        DIRTY = 1,
-        PARSED = 2,
-        CALCULATED = 3,
-        EXPORTED = 4,
-    }
-
-    public class VStatusString
-    {
-        public static IDictionary<VStatus, string> VStatus2String = new ReadOnlyDictionary<VStatus, string>(new Dictionary<VStatus, string> { { VStatus.NA, "NA" }, { VStatus.DIRTY, "Modified" }, { VStatus.PARSED, "Parsed and validated" }, { VStatus.CALCULATED, "Calculated" }, { VStatus.EXPORTED, "Exported" } });
-    }
-    
-
-
-    }
+    }  
+}
