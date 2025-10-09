@@ -24,8 +24,6 @@ namespace AMU_Template.Parsers
 
             for (int row = 2; row <= dListRange.Rows.Count; row++) // Start from row 2 to skip the header..!
             {
-                
-                
                 string atcCode = dListRange.Cells[row, 2].Value;
                 ATC atc5 = atc5_dict[atcCode.Trim().ToUpper()];
                 string roaCode = StringParser.ParseAndTrimAndUpper(dListRange.Cells[row, 3].Value);
@@ -36,14 +34,15 @@ namespace AMU_Template.Parsers
                     saltCode = "XXXX";
                 }
                 Salt salt = salt_dict[saltCode];
-                Decimal dddValue = Convert.ToDecimal(dListRange.Cells[row, 5].Value);
-                string u = StringParser.ParseAndTrimAndUpper(dListRange.Cells[row, 6].Value);
+                String substance = StringParser.ParseAndTrim(dListRange.Cells[row, 5].Value);
+                Decimal dddValue = Convert.ToDecimal(dListRange.Cells[row, 6].Value);
+                string u = StringParser.ParseAndTrimAndUpper(dListRange.Cells[row, 7].Value);
                 MeasureUnit dddUnit = unit_dict[u];
-                Decimal dddStdValue = Convert.ToDecimal(dListRange.Cells[row, 7].Value);
-                string notes = StringParser.ParseAndTrim(dListRange.Cells[row, 8].Value);
+                Decimal dddStdValue = Convert.ToDecimal(dListRange.Cells[row, 8].Value);
+                string notes = StringParser.ParseAndTrim(dListRange.Cells[row, 9].Value);
 
 
-                DDD ddd = new DDD(atc5, roa, salt, dddValue, dddUnit, dddStdValue, notes);
+                DDD ddd = new DDD(atc5, roa, salt, substance, dddValue, dddUnit, dddStdValue, notes);
                 dList.Add(ddd);
             }
 

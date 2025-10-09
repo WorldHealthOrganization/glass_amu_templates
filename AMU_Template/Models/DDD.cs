@@ -16,6 +16,8 @@ namespace AMU_Template.Models
 
         public Salt Salt { get; set; }
 
+        public String Substance { get; set; }
+
         public Decimal Value { get; set; }
 
         public MeasureUnit Unit { get; set; }
@@ -26,11 +28,12 @@ namespace AMU_Template.Models
 
         public string? Notes { get; set; }
 
-        public DDD(ATC ATC5, AdministrationRoute ROA, Salt Salt, Decimal Value, MeasureUnit Unit, Decimal StdValue, string? Notes)
+        public DDD(ATC ATC5, AdministrationRoute ROA, Salt Salt, String Substance, Decimal Value, MeasureUnit Unit, Decimal StdValue, string? Notes)
         {
             this.ATC5 = ATC5;
             this.ROA = ROA;
             this.Salt = Salt;
+            this.Substance = Substance;
             this.Value = Value;
             this.Unit = Unit;
             this.StdValue = StdValue;
