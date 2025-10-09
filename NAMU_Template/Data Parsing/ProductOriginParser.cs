@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using Microsoft.Office.Interop.Excel;
 using AMU_Template.Parsers;
-using NAMU_Template.Models;
+using AMU_Template.Models;
 
 namespace NAMU_Template.Data_Parsing
 {
