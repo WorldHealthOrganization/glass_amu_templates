@@ -28,21 +28,11 @@ namespace AMU_Template.Parsers
 
             for (int row = 2; row <= emlListRange.Rows.Count; row++) // Start from row 2 to skip the header..!
             {
-                var atc5 = StringParser.ParseAndTrimAndUpper(emlListRange.Cells[row, 1].Value);
-                string emlTxt = StringParser.ParseAndTrimAndUpper(emlListRange.Cells[row, 3].Value);
-                var inEML = YesNoNAString.GetYesNoNAFromString(emlTxt);
-                var roa = StringParser.ParseAndTrimAndUpper(emlListRange.Cells[row, 2].Value);
-                if (String.IsNullOrEmpty(roa))
-                {
-                    for (int i = 0; i < defaultRoas.Length; i++)
-                    {
-                        emlList.Add(new MEML(atc5, defaultRoas[i], inEML));
-                    }
-                }
-                else
-                {
-                    emlList.Add(new MEML(atc5, roa, inEML));
-                }
+                string atc5 = StringParser.ParseAndTrimAndUpper(emlListRange.Cells[row, 1].Value);
+                string roa = StringParser.ParseAndTrimAndUpper(emlListRange.Cells[row, 2].Value);
+                string inn = StringParser.ParseAndTrim(emlListRange.Cells[row, 3].Value);
+                string equiv = StringParser.ParseAndTrim(emlListRange.Cells[row, 4].Value);
+                emlList.Add(new MEML(atc5, roa, inn, equiv));
             }
 
             return emlList;

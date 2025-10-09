@@ -12,15 +12,18 @@ namespace AMU_Template.Models
 
         public string ROA { get; set; }
 
-        public YesNoNA EML { get; set; }
+        public string INN { get; set; }
+
+        public string Equivalent { get; set; }
 
         public MEML() { }   
 
-        public MEML(string atc5, string roa, YesNoNA inEml)
+        public MEML(string atc5, string roa, string inn, string equivalent)
         {
             ATC5 = atc5;
             ROA = roa;
-            EML = inEml;
+            INN = inn;
+            Equivalent = equivalent;
         }
     }
 }
