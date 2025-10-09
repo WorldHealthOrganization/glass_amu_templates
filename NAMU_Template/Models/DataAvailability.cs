@@ -55,6 +55,7 @@ namespace NAMU_Template.Models
 
 
         public List<int> Years;
+
         public class Availability
         {
             public bool Total;
