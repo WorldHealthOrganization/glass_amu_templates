@@ -1,3 +1,3 @@
 ﻿<hostitem:hostItem hostitem:baseType="Microsoft.Office.Tools.Excel.WorksheetBase" hostitem:namespace="NAMU_Template" hostitem:className="Sheet4" hostitem:identifier="Sheet4" hostitem:primaryCookie="Sheet4" hostitem:factoryType="Microsoft.Office.Tools.Excel.Factory" hostitem:startupIndex="14" xmlns:hostitem="http://schemas.microsoft.com/2004/VisualStudio/Tools/Applications/HostItem.xsd">
-  <hostitem:hostControl hostitem:name="Table8" hostitem:identifier="Table8" hostitem:type="Microsoft.Office.Tools.Excel.ListObject" hostitem:primaryCookie="Sheet4:Table8" hostitem:extenderCookie="" hostitem:modifier="Internal" />
+  <hostitem:hostControl hostitem:name="TableAWARE" hostitem:identifier="TableAWARE" hostitem:type="Microsoft.Office.Tools.Excel.ListObject" hostitem:primaryCookie="Sheet4:TableAWARE" hostitem:extenderCookie="" hostitem:modifier="Internal" />
 </hostitem:hostItem>

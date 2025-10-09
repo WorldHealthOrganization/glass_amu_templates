@@ -17,7 +17,7 @@ namespace NAMU_Template {
     [global::System.Security.Permissions.PermissionSetAttribute(global::System.Security.Permissions.SecurityAction.Demand, Name="FullTrust")]
     public sealed partial class Sheet4 : Microsoft.Office.Tools.Excel.WorksheetBase {
         
-        internal Microsoft.Office.Tools.Excel.ListObject Table8;
+        internal Microsoft.Office.Tools.Excel.ListObject TableAWARE;
         
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "17.0.0.0")]
         private global::System.Object missing = global::System.Type.Missing;
@@ -116,7 +116,7 @@ namespace NAMU_Template {
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         private void BeginInitialization() {
             this.BeginInit();
-            this.Table8.BeginInit();
+            this.TableAWARE.BeginInit();
         }
         
         /// 
@@ -124,7 +124,7 @@ namespace NAMU_Template {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "17.0.0.0")]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         private void EndInitialization() {
-            this.Table8.EndInit();
+            this.TableAWARE.EndInit();
             this.EndInit();
         }
         
@@ -133,7 +133,7 @@ namespace NAMU_Template {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "17.0.0.0")]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         private void InitializeControls() {
-            this.Table8 = Globals.Factory.CreateListObject(null, null, "Sheet4:Table8", "Table8", this);
+            this.TableAWARE = Globals.Factory.CreateListObject(null, null, "Sheet4:TableAWARE", "TableAWARE", this);
         }
         
         /// 
@@ -155,7 +155,7 @@ namespace NAMU_Template {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Tools.Office.ProgrammingModel.dll", "17.0.0.0")]
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Never)]
         protected override void OnShutdown() {
-            this.Table8.Dispose();
+            this.TableAWARE.Dispose();
             base.OnShutdown();
         }
     }
