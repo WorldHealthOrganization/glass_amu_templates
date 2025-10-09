@@ -15,6 +15,7 @@ using NAMU_Template.Data_Processing;
 using NAMU_Template.Helper;
 using Excel = Microsoft.Office.Interop.Excel;
 using AMU_Template.Constants;
+using AMU_Template.Validations;
 
 namespace NAMU_Template
 {
@@ -488,7 +489,7 @@ namespace NAMU_Template
                 DisplayProductsAndStatuses(listProducts);
                 ////Set isProductValidating to false
                 isProductValidating = false;
-                Validator.SetStatus(Constants.VStatus.PARSED);
+                Validator.SetStatus(VStatus.PARSED);
 
             }
             catch (Exception ex)
@@ -690,12 +691,20 @@ namespace NAMU_Template
         {
             Excel.Workbook wb = Globals.ThisWorkbook.Application.ActiveWorkbook;
             Excel.Worksheet productWorksheet = wb.Worksheets[TemplateFormat.DATA_SHEETNAME];
+            Color InfoColor = Color.FromArgb(255, 220, 238, 157);
+
             //Logic:
             //Instead of interacting with the excel object for every product, create a data object and populate that, after populating the obj, assign it to the Excel Range..!
             int totalRows = listProducts.Count;
             int totalColumns = 9; // Assuming there are 7 columns to display
             int dataStartColumn = TemplateFormat.AUTO_CALC_START_COL_IDX;
             int dataEndColumn = dataStartColumn + TemplateFormat.AUTO_CALC_END_COL_IDX;
+
+            if (totalRows == 0)
+            {
+                MessageBox.Show($"No product to validate.\r\n");
+                return;
+            }
 
             // Create a 2D array for data..!
             //For Rows and Columns..!
@@ -753,19 +762,24 @@ namespace NAMU_Template
                         productWorksheet.Range[productWorksheet.Cells[lineNo, 1], productWorksheet.Cells[lineNo, 2]].Interior.Color = Color.Green;
                         productWorksheet.Range[productWorksheet.Cells[lineNo, 1], productWorksheet.Cells[lineNo, 2]].HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
                         break;
+                    case EntityStatus.INFO:
+                        statusData[i, 0] = "INFO";
+                        statusData[i, 1] = pr.GetStatusMessages();
+                        productWorksheet.Range[productWorksheet.Cells[lineNo, 1], productWorksheet.Cells[lineNo, 2]].Interior.Color = InfoColor;// Color.YellowGreen;
+                        productWorksheet.Range[productWorksheet.Cells[lineNo, 1], productWorksheet.Cells[lineNo, 2]].HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
+                        break;
                     case EntityStatus.WARNING:
                         statusData[i, 0] = "WARNING";
                         statusData[i, 1] = pr.GetStatusMessages();
                         productWorksheet.Range[productWorksheet.Cells[lineNo, 1], productWorksheet.Cells[lineNo, 2]].Interior.Color = Color.Orange;
                         productWorksheet.Range[productWorksheet.Cells[lineNo, 1], productWorksheet.Cells[lineNo, 2]].HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
                         break;
-                    case EntityStatus.INFO:
                     case EntityStatus.ERROR:
-                        string statusText = (pr.Status == EntityStatus.INFO) ? "INFO" : "ERR";
+                        string statusText = "ERROR";
                         string msgTxt = pr.GetStatusMessages();
                         statusData[i, 0] = statusText;
                         statusData[i, 1] = msgTxt;
-                        productWorksheet.Range[productWorksheet.Cells[lineNo, 1], productWorksheet.Cells[lineNo, 2]].Interior.Color = (pr.Status == EntityStatus.ERROR) ? Color.Red : Color.Yellow;
+                        productWorksheet.Range[productWorksheet.Cells[lineNo, 1], productWorksheet.Cells[lineNo, 2]].Interior.Color = Color.Red;
                         productWorksheet.Range[productWorksheet.Cells[lineNo, 1], productWorksheet.Cells[lineNo, 2]].HorizontalAlignment = Excel.XlHAlign.xlHAlignLeft;
                         foreach (var validation in pr.ValidationMessages)
                         {
@@ -775,7 +789,7 @@ namespace NAMU_Template
                             {
                                 int columnIndex = dataField.FieldColumn;
                                 Excel.Range cellWithIssue = productWorksheet.Cells[lineNo, columnIndex];
-                                cellWithIssue.Borders.Color = Color.OrangeRed;
+                                cellWithIssue.Borders.Color = Color.Red;
                                 cellWithIssue.Borders.Weight = Excel.XlBorderWeight.xlMedium;
                             }
                         }
@@ -794,11 +808,11 @@ namespace NAMU_Template
             if (hasErrors)
             {
                 // Show products with errors in the MessageBox..!
-                MessageBox.Show($"There are some issues in the Product data sheet.\n\nPlease review the data and validate it again.");
+                MessageBox.Show($"Validation of the products has been completed.\n\nThere are some errors in the Product data sheet.\n\nPlease review the data and validate it again.");
             }
             else
             {
-                MessageBox.Show($"Validation of the products has been successfully completed.\n\nPlease proceed by pressing the Calculate Consumption button to calculate the consumption in DDD.\r\n");
+                MessageBox.Show($"Validation of the products has been successfully completed.\n\nPlease proceed by pressing the Calculate Use button to calculate the use in DDD.\r\n");
             }
             // Autofit columns after the loop
             productWorksheet.Columns.AutoFit();
