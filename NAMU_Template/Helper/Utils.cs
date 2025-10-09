@@ -153,28 +153,28 @@ namespace NAMU_Template.Helper
                 .ToDictionary(da => da.Sector, da => da);
         }
 
-        public static ATC GetATCParent(ATC child)
-        {    
-            var parent_code = "";
-            switch(child.Level)
-            {
-                case 5:
-                    parent_code = child.Code.Substring(0,5);
-                    break;
-                case 4:
-                    parent_code = child.Code.Substring(0, 4);
-                    break;
-                case 3:
-                    parent_code = child.Code.Substring(0, 3);
-                    break;
-                case 2:
-                    parent_code = child.Code.Substring(0, 1);
-                    break;
-                default:
-                    throw new Exception($"ATC {child.Code} is already at the ATC level 1.");
-            }
-            ATC parent = ThisWorkbook.ATCDataDict[parent_code];
-            return parent;
-        }
+        //public static ATC GetATCParent(ATC child)
+        //{    
+        //    var parent_code = "";
+        //    switch(child.Level)
+        //    {
+        //        case 5:
+        //            parent_code = child.Code.Substring(0,5);
+        //            break;
+        //        case 4:
+        //            parent_code = child.Code.Substring(0, 4);
+        //            break;
+        //        case 3:
+        //            parent_code = child.Code.Substring(0, 3);
+        //            break;
+        //        case 2:
+        //            parent_code = child.Code.Substring(0, 1);
+        //            break;
+        //        default:
+        //            throw new Exception($"ATC {child.Code} is already at the ATC level 1.");
+        //    }
+        //    ATC parent = ThisWorkbook.ATCDataDict[parent_code];
+        //    return parent;
+        //}
     }
 }
