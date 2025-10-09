@@ -10,11 +10,12 @@ using Worksheet = Microsoft.Office.Interop.Excel.Worksheet;
 using AMU_Template.Constants;
 using AMU_Template.Models;
 using AMU_Template.Parsers;
+using NAMU_Template.Data_Parsing;
 using NAMU_Template.Models;
 using NAMU_Template.Constants;
-using NAMU_Template.Data_Validation;
 using NAMU_Template.Helper;
-using EntityStatus = NAMU_Template.Data_Validation.EntityStatus;
+using EntityStatus = AMU_Template.Validations.EntityStatus;
+using AMU_Template.Validations;
 
 
 namespace NAMU_Template.Data_Parsing
@@ -130,7 +131,7 @@ namespace NAMU_Template.Data_Parsing
                 ctry = CommonParser.ParseCountryISO3(rows.Cells[r, TemplateFormat.POP_SHEET_COUNTRY_COL_IDX]?.Value, "Country", errorStatus, ref variableErrors, true);
                 year = CommonParser.ParseYear(rows.Cells[r, TemplateFormat.POP_SHEET_YEAR_COL_IDX]?.Value, "Year", errorStatus, ref variableErrors, true);
                 atcClass = CommonParser.ParseATCClass(rows.Cells[r, TemplateFormat.POP_SHEET_ATCCLASS_COL_IDX]?.Value, "ATC Class", errorStatus, ref variableErrors, false);
-                sector = CommonParser.ParseHealthSector(rows.Cells[r, TemplateFormat.POP_SHEET_SECTOR_COL_IDX]?.Value, "Sector", errorStatus, ref variableErrors, false);
+                sector = NAMUCommonParser.ParseHealthSector(rows.Cells[r, TemplateFormat.POP_SHEET_SECTOR_COL_IDX]?.Value, "Sector", errorStatus, ref variableErrors, false);
                 total = CommonParser.ParseDecimal(rows.Cells[r, TemplateFormat.POP_SHEET_POP_TOTAL_COL_IDX]?.Value, "Total", errorStatus, ref variableErrors, false);
                 community = CommonParser.ParseDecimal(rows.Cells[r, TemplateFormat.POP_SHEET_POP_COMMUNITY_COL_IDX]?.Value, "Community", errorStatus, ref variableErrors, false);
                 hospital = CommonParser.ParseDecimal(rows.Cells[r, TemplateFormat.POP_SHEET_POP_HOSPITAL_COL_IDX]?.Value, "Hospital", errorStatus, ref variableErrors, false);
@@ -461,7 +462,7 @@ namespace NAMU_Template.Data_Parsing
                         return false;
                     }
 
-                    HealthSector? sectorTmp = CommonParser.ParseHealthSector(Convert.ToString(values[row, 3]), "Sector", errorStatus, ref variableErrors, true);
+                    HealthSector? sectorTmp = NAMUCommonParser.ParseHealthSector(Convert.ToString(values[row, 3]), "Sector", errorStatus, ref variableErrors, true);
                     if (sectorTmp == null)
                     {
                         MessageBox.Show($"In {TemplateFormat.AVAILABILITY_SHEETNAME} worksheet: Sector {sectorTmp} is not valid at row {row}.");
@@ -1106,8 +1107,10 @@ namespace NAMU_Template.Data_Parsing
         private static Product ParseProductFromArray(object[,] values, int index, int excelRow)
         {
             //  Step 1: Initialize the product object first
-            Product pr = new Product();
-            pr.ProductLineNo = excelRow;
+            Product pr = new Product
+            {
+                ProductLineNo = excelRow
+            };
 
             try
             {
@@ -1777,7 +1780,6 @@ namespace NAMU_Template.Data_Parsing
 
             DataField<string> df = InitializeDataField<string>(Product.FORM_FIELD, true, TemplateFormat.DATA_SHEET_FORM_COL_IDX);
 
-            string errMsg;
 
             if(String.IsNullOrEmpty(value))
             {
@@ -1921,8 +1923,6 @@ namespace NAMU_Template.Data_Parsing
 
             DataField<string> df = InitializeDataField<string>(Product.PRODUCT_NAME_FIELD, true, TemplateFormat.DATA_SHEET_PRODUCT_NAME_COL_IDX);
 
-            string errMsg;
-
             if (String.IsNullOrEmpty(value))
             {
                 df.InputValue = value;
@@ -1946,8 +1946,6 @@ namespace NAMU_Template.Data_Parsing
             string value = Convert.ToString(cellValue)?.Trim();
 
             DataField<string> df = InitializeDataField<string>(Product.MARKET_AUTH_HOLDER_FIELD, true, TemplateFormat.DATA_SHEET_MAH_COL_IDX);
-
-            string errMsg;
 
             if (String.IsNullOrEmpty(value))
             {
@@ -1973,7 +1971,6 @@ namespace NAMU_Template.Data_Parsing
 
             DataField<string> df = InitializeDataField<string>(Product.INGREDIENTS_FIELD, true, TemplateFormat.DATA_SHEET_INGREDIENTS_COL_IDX);
 
-            string errMsg;
 
             if (String.IsNullOrEmpty(value))
             {
