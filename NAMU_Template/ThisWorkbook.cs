@@ -9,6 +9,7 @@ using AMU_Template.Models;
 using NAMU_Template.Constants;
 using NAMU_Template.Data_Parsing;
 using NAMU_Template.Models;
+using AMU_Template.Constants;
 
 
 namespace NAMU_Template
@@ -35,7 +36,7 @@ namespace NAMU_Template
 
             Application.ActiveWindow.Zoom = 100;
 
-            VSTATUS = Constants.VStatus.NA;
+            VSTATUS = VStatus.NA;
 
             //Not to send the whole workbook in every function..!
             Excel.Worksheet ATC_Datasheet = this.Application.ActiveWorkbook.Worksheets[TemplateFormat.ATC_SHEETNAME];
