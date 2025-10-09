@@ -7,13 +7,14 @@ using System.Linq;
 using AMU_Template.Constants;
 using AMU_Template.Helpers;
 using AMU_Template.Models;
+using AMU_Template.Validations;
 using NAMU_Template.Constants;
 using NAMU_Template.Data_Validation;
 using NAMU_Template.Helper;
 
 namespace NAMU_Template.Models
 {
-    public class Product : Medicine
+    public class Product : BaseMedicine
     {
 
         // WHO Excel Template Fields
@@ -328,7 +329,7 @@ namespace NAMU_Template.Models
         {
             foreach (var validation in Validations)
             {
-                if (!validation.Value && validation.Key!=DDD_VALIDATION) // DDD validation should not be counted in the overall validation.
+                if (!validation.Value && !(validation.Key==DDD_VALIDATION || validation.Key ==DPP_VALIDATION)) // DDD amd DPP validation should not be counted in the overall validation.
                 {
                     return false;
                 }
@@ -500,9 +501,9 @@ namespace NAMU_Template.Models
             }
             
             this.ATC5 = (ATC)atc5_data.Value;
-            this.ATC4 = Utils.GetATCParent(this.ATC5);
-            this.ATC3 = Utils.GetATCParent(this.ATC4);
-            this.ATC2 = Utils.GetATCParent(this.ATC3);
+            this.ATC4 = ATCHelper.GetATCParent(this.ATC5, ThisWorkbook.ATCDataDict);
+            this.ATC3 = ATCHelper.GetATCParent(this.ATC4, ThisWorkbook.ATCDataDict);
+            this.ATC2 = ATCHelper.GetATCParent(this.ATC3, ThisWorkbook.ATCDataDict);
             this.AMClass = this.ATC5.AMClass;
             this.ATCClass = this.ATC5.ATCClass;
             SetValidate(true, ATC5_VALIDATION);
@@ -828,8 +829,14 @@ namespace NAMU_Template.Models
 
         private void ValidateConvFactor()
         {
-            if (!IsMandatoryValidationValid(ARS_VALIDATION) || !IsMandatoryValidationValid(STRENGTH_VALIDATION) || !IsMandatoryValidationValid(DDD_VALIDATION))
+            if (!IsMandatoryValidationValid(ARS_VALIDATION) || !IsMandatoryValidationValid(STRENGTH_VALIDATION))
             {
+                return;
+            }
+
+            if (!IsMandatoryValidationValid(DDD_VALIDATION))
+            {
+                SetValidate(true, CONVERSION_VALIDATION);
                 return;
             }
 
@@ -1007,11 +1014,11 @@ namespace NAMU_Template.Models
             var eml = ThisWorkbook.MemlDataList.Where(a => a.ATC5 == this.ATC5.Code && a.ROA == this.Roa.Code).FirstOrDefault();
             if (eml != null)
             {
-                this.MEML= eml.EML;
+                this.MEML= YesNoNA.Yes;
             }
             else
             {
-                this.MEML = YesNoNA.NA;
+                this.MEML = YesNoNA.No;
             }
             SetValidate(true, MEML_VALIDATION);
         }
