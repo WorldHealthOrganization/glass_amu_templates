@@ -1,0 +1,3 @@
+﻿<hostitem:hostItem hostitem:baseType="Microsoft.Office.Tools.Excel.WorksheetBase" hostitem:namespace="HAMU_Template" hostitem:className="Feuil14" hostitem:identifier="Feuil14" hostitem:primaryCookie="Feuil14" hostitem:factoryType="Microsoft.Office.Tools.Excel.Factory" hostitem:startupIndex="14" xmlns:hostitem="http://schemas.microsoft.com/2004/VisualStudio/Tools/Applications/HostItem.xsd">
+  <hostitem:hostControl hostitem:name="TableRoAs" hostitem:identifier="TableRoAs" hostitem:type="Microsoft.Office.Tools.Excel.ListObject" hostitem:primaryCookie="Feuil14:TableRoAs" hostitem:extenderCookie="" hostitem:modifier="Internal" />
+</hostitem:hostItem>
