@@ -103,6 +103,21 @@ namespace NAMU_Template.Data_Parsing
 
     public static class AvailabilityPopulationDataParser
     {
+
+        private static Decimal GetPopulationFigures(Decimal? targetPop, Decimal? defaultPop)
+        {
+            if (targetPop != null && targetPop != Decimal.Zero)
+            {
+                return (Decimal)targetPop;
+            }
+            if (defaultPop == null || defaultPop == Decimal.Zero)
+            {
+                return Decimal.Zero;
+            } else
+            {
+                return (Decimal)defaultPop;
+            }
+        }
         public static bool ParsePopulation(int maxRowsForPopulation, int firstRow, Range rows,
                                             out List<Population> popYears, List<DataAvailability> avData)
         {
@@ -176,8 +191,19 @@ namespace NAMU_Template.Data_Parsing
                             }
                             else if (sectAvail.AvailabilityCommunity && sectAvail.AvailabilityHospital)
                             {
-                                cvpop = (community == Decimal.Zero) ? total : community;
-                                hvpop = (hospital == Decimal.Zero) ? total : hospital;
+                                cvpop = GetPopulationFigures(community, total);
+                                if (cvpop == Decimal.Zero)
+                                {
+                                    MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Community Population cannot be null for year {year} according to availability data.");
+                                    return false;
+                                }
+                                hvpop = GetPopulationFigures(hospital, total);
+                                if (hvpop == Decimal.Zero)
+                                {
+                                    MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Hospital Population cannot be null for year {year} according to availability data.");
+                                    return false;
+                                }
+
                                 pop.Country = ctry;
                                 pop.Year = (int)year;
                                 pop.ATCClass = atcClass;
@@ -188,7 +214,13 @@ namespace NAMU_Template.Data_Parsing
                             }
                             else if (sectAvail.AvailabilityCommunity)
                             {
-                                cvpop = (community == Decimal.Zero) ? total : community;
+                                cvpop = GetPopulationFigures(community, total);
+                                if (cvpop == Decimal.Zero)
+                                {
+                                    MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Community Population cannot be null for year {year} according to availability data.");
+                                    return false;
+                                }
+
                                 pop.Country = ctry;
                                 pop.Year = (int)year;
                                 pop.ATCClass = atcClass;
@@ -199,7 +231,13 @@ namespace NAMU_Template.Data_Parsing
                             }
                             else if (sectAvail.AvailabilityHospital)
                             {
-                                hvpop = (hospital == Decimal.Zero) ? total : hospital;
+                                hvpop = GetPopulationFigures(hospital, total);
+                                if (hvpop == Decimal.Zero)
+                                {
+                                    MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Hospital Population cannot be null for year {year} according to availability data.");
+                                    return false;
+                                }
+
                                 pop.Country = ctry;
                                 pop.Year = (int)year;
                                 pop.ATCClass = atcClass;
@@ -247,8 +285,18 @@ namespace NAMU_Template.Data_Parsing
                         }
                         else if (sectAvail.AvailabilityCommunity && sectAvail.AvailabilityHospital)
                         {
-                            cvpop = (community == Decimal.Zero) ? total : community;
-                            hvpop = (hospital == Decimal.Zero) ? total : hospital;
+                            cvpop = GetPopulationFigures(community, total);
+                            if (cvpop == Decimal.Zero)
+                            {
+                                MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Community Population cannot be null for year {year} according to availability data.");
+                                return false;
+                            }
+                            hvpop = GetPopulationFigures(hospital, total);
+                            if (hvpop == Decimal.Zero)
+                            {
+                                MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Hospital Population cannot be null for year {year} according to availability data.");
+                                return false;
+                            }
 
                             pop.Country = ctry;
                             pop.Year = (int)year;
@@ -260,7 +308,13 @@ namespace NAMU_Template.Data_Parsing
                         }
                         else if (sectAvail.AvailabilityCommunity)
                         {
-                            cvpop = (community == Decimal.Zero) ? total : community;
+                            cvpop = GetPopulationFigures(community, total);
+                            if (cvpop == Decimal.Zero)
+                            {
+                                MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Community Population cannot be null for year {year} according to availability data.");
+                                return false;
+                            }
+
                             pop.Country = ctry;
                             pop.Year = (int)year;
                             pop.ATCClass = atcClass;
@@ -271,7 +325,13 @@ namespace NAMU_Template.Data_Parsing
                         }
                         else if (sectAvail.AvailabilityHospital)
                         {
-                            hvpop = (hospital == Decimal.Zero) ? total : hospital;
+                            hvpop = GetPopulationFigures(hospital, total);
+                            if (hvpop == Decimal.Zero)
+                            {
+                                MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Hospital Population cannot be null for year {year} according to availability data.");
+                                return false;
+                            }
+
                             pop.Country = ctry;
                             pop.Year = (int)year;
                             pop.ATCClass = atcClass;
@@ -323,8 +383,18 @@ namespace NAMU_Template.Data_Parsing
                         }
                         else if (sectAvail.AvailabilityCommunity && sectAvail.AvailabilityHospital)
                         {
-                            cvpop = (community == Decimal.Zero) ? total : community;
-                            hvpop = (hospital == Decimal.Zero) ? total : hospital;
+                            cvpop = GetPopulationFigures(community, total);
+                            if(cvpop==Decimal.Zero)
+                            {
+                                MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Community Population cannot be null for year {year} according to availability data.");
+                                return false;
+                            }
+                            hvpop = GetPopulationFigures(hospital, total);
+                            if (hvpop == Decimal.Zero)
+                            {
+                                MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Hospital Population cannot be null for year {year} according to availability data.");
+                                return false;
+                            }
 
                             pop.Country = ctry;
                             pop.Year = (int)year;
@@ -336,7 +406,13 @@ namespace NAMU_Template.Data_Parsing
                         }
                         else if (sectAvail.AvailabilityCommunity)
                         {
-                            cvpop = (community == Decimal.Zero) ? total : community;
+                            cvpop = GetPopulationFigures(community, total);
+                            if (cvpop == Decimal.Zero)
+                            {
+                                MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Community Population cannot be null for year {year} according to availability data.");
+                                return false;
+                            }
+
                             pop.Country = ctry;
                             pop.Year = (int)year;
                             pop.ATCClass = atcClass;
@@ -347,7 +423,13 @@ namespace NAMU_Template.Data_Parsing
                         }
                         else if (sectAvail.AvailabilityHospital)
                         {
-                            hvpop = (hospital == Decimal.Zero) ? total : hospital;
+                            hvpop = GetPopulationFigures(hospital, total);
+                            if (hvpop == Decimal.Zero)
+                            {
+                                MessageBox.Show($"In {TemplateFormat.POPULATION_SHEETNAME} worksheet: Hospital Population cannot be null for year {year} according to availability data.");
+                                return false;
+                            }
+
                             pop.Country = ctry;
                             pop.Year = (int)year;
                             pop.ATCClass = atcClass;
