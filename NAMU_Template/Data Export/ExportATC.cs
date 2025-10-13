@@ -18,6 +18,22 @@ namespace NAMU_Template.Data_Export
 {
     public static class ExportATC
     {
+        static readonly string PRODUCT_DATA_SHEET_NAME = "Products data";
+        static readonly string SUBSTANCE_DATA_SHEET_NAME = "Substances data";
+        static readonly string SUBSTANCE_ATB_DATA_SHEET_NAME = "Antibiotic Substances data";
+        static readonly string SUBSTANCE_AWR_DATA_SHEET_NAME = "AWaRe data";
+        static readonly string SUBSTANCE_AWR_CHART_SHEET_NAME = "AWaRe charts";
+        static readonly string SUBSTANCE_ATC3_DATA_SHEET_NAME = "Pharmacological group data";
+        static readonly string SUBSTANCE_ATC3_CHART_SHEET_NAME = "Pharmacological group charts";
+        static readonly string AWR_TABLE_NAME = "AWRTable";
+        static readonly string SUBSTANCE_TABLE_NAME = "SubstancePivotTable";
+        static readonly string ATC3_TABLE_NAME = "ATCPivotTable";
+        
+        
+
+
+
+
         public static void ExportATCConsumption(
         List<AtcConsumption> atcConsData,
         List<DataAvailability> availData,
@@ -33,7 +49,7 @@ namespace NAMU_Template.Data_Export
                 "ATC2", "ATC3", "ATC4", "ATC5", "ROA", "DDD", "DID"
             };
 
-            var worksheetName = "Substance Sheet";
+            var worksheetName = SUBSTANCE_DATA_SHEET_NAME;
             ProcessAndExportATCData(atcConsData, availData, workbook, headers, worksheetName);
             PopulateAWaRePivotTableAndGraphs(workbook);
             PopulateATCPivotTableAndGraphs(workbook);
@@ -49,7 +65,7 @@ namespace NAMU_Template.Data_Export
             Excel.Worksheet dataSheet = null;
             foreach (Excel.Worksheet ws in workbook.Worksheets)
             {
-                if (ws.Name.Equals("Aware Chart", StringComparison.OrdinalIgnoreCase))
+                if (ws.Name.Equals(SUBSTANCE_AWR_CHART_SHEET_NAME, StringComparison.OrdinalIgnoreCase))
                 {
                     dataSheet = ws;
                     break;
@@ -58,7 +74,7 @@ namespace NAMU_Template.Data_Export
             if (dataSheet == null)
             {
                 dataSheet = workbook.Worksheets.Add();
-                dataSheet.Name = "Aware Chart";
+                dataSheet.Name = SUBSTANCE_AWR_CHART_SHEET_NAME;
             }
           
             return dataSheet;
@@ -253,7 +269,7 @@ namespace NAMU_Template.Data_Export
             Excel.ListObject table;
             try
             {
-                table = dataSheet.ListObjects["AWRTable"];
+                table = dataSheet.ListObjects[AWR_TABLE_NAME];
                 table.ShowAutoFilter = false;
             }
             catch
@@ -265,7 +281,7 @@ namespace NAMU_Template.Data_Export
                     Excel.XlYesNoGuess.xlYes,
                     Type.Missing
                 );
-                table.Name = "AWRTable";
+                table.Name = AWR_TABLE_NAME;
                 table.ShowAutoFilter = false;
             }
 
@@ -382,14 +398,39 @@ namespace NAMU_Template.Data_Export
             var sTime = DateTime.Now;
             Debug.WriteLine($"Entering PopulateAWaRePivotTableAndGraphs: {sTime}.");
 #endif
-            Excel.Worksheet substanceSheet = workbook.Worksheets["Substance Sheet"];
-            Excel.Range dataRange = substanceSheet.UsedRange;
+
+            //create a worksheet with AWaRe valid products: products with ATB AM Class
+            Excel.Worksheet atbDataSheet = workbook.Sheets.Add();
+            atbDataSheet.Name = SUBSTANCE_ATB_DATA_SHEET_NAME;
+
+            Excel.Worksheet substanceSheet = workbook.Worksheets[SUBSTANCE_DATA_SHEET_NAME];
+            Excel.Range filteredRange = substanceSheet.UsedRange;
+
+            filteredRange.AutoFilter(
+                    Field: 6,               // Column AM CLASS
+                    Criteria1: "ATB",       // Filter on value ATB
+                    Operator: Excel.XlAutoFilterOperator.xlAnd,
+                    VisibleDropDown: true
+                );
+
+
+            Excel.Range filteredAtbRange = filteredRange.SpecialCells(Excel.XlCellType.xlCellTypeVisible);
+
+            // Copy the filtered data into the Aware Substance Data.
+            filteredAtbRange.Copy(atbDataSheet.Cells[1,1]);
+
+            // Remove the filter from substance data sheet
+            substanceSheet.AutoFilterMode = false;
+
+            // Use the new ATB data range
+            Excel.Range dataRange = atbDataSheet.UsedRange;
+
 
             // Create a pivot cache and add a new sheet for the pivot table.
             Excel.PivotCache pivotCache = workbook.PivotCaches().Create(
                 Excel.XlPivotTableSourceType.xlDatabase, dataRange);
             Excel.Worksheet pivotSheet = workbook.Sheets.Add();
-            pivotSheet.Name = "Aware Data";
+            pivotSheet.Name = SUBSTANCE_AWR_DATA_SHEET_NAME;
 
             // Unlock all cells on the sheet (optional, if you want others editable)
             pivotSheet.Cells.Locked = false;
@@ -400,7 +441,7 @@ namespace NAMU_Template.Data_Export
 
             // Create the pivot table.
             Excel.PivotTable pivotTable = pivotSheet.PivotTables().Add(
-                pivotCache, pivotSheet.Range["A1"], "SubstancePivotTable");
+                pivotCache, pivotSheet.Range["A1"], SUBSTANCE_TABLE_NAME);
 
             // Configure pivot fields:
             // - "Year" as row field.
@@ -560,7 +601,7 @@ namespace NAMU_Template.Data_Export
 
         private static void UpdateChartDataSheetForATB(Excel.Workbook workbook, Excel.PivotTable pivotTable)
         {
-            string sheetName = "ATB Chart";
+            string sheetName = SUBSTANCE_ATC3_CHART_SHEET_NAME;
             Excel.Worksheet dataSheet = GetChartDataSheetForATB(workbook, sheetName);
             Excel.Range ptRange = pivotTable.TableRange1;
             // int pivotRows = ptRange.Rows.Count;
@@ -614,7 +655,7 @@ namespace NAMU_Template.Data_Export
         public static void AddATCGraphs(Excel.Workbook workbook, Excel.PivotTable pivotTable)
         {
             // Retrieve and update the ATC chart data sheet.
-            Excel.Worksheet chartSheet = GetChartDataSheetForATB(workbook, "ATB Chart");
+            Excel.Worksheet chartSheet = GetChartDataSheetForATB(workbook, SUBSTANCE_ATC3_CHART_SHEET_NAME);
             UpdateChartDataSheetForATB(workbook, pivotTable);
             Excel.Range usedRange = chartSheet.UsedRange;
             int pivotRows = usedRange.Rows.Count;
@@ -690,7 +731,7 @@ namespace NAMU_Template.Data_Export
                 newSeries.XValues = xValues;
             }
             valueChart.HasTitle = true;
-            valueChart.ChartTitle.Text = "Total DID by ATCAMClass & ATC3";
+            valueChart.ChartTitle.Text = "Total DID by AMClass & ATC3";
             valueChart.HasLegend = true;
             valueChart.Legend.IncludeInLayout = true;
             valueChart.Legend.Position = Excel.XlLegendPosition.xlLegendPositionBottom;
@@ -713,7 +754,7 @@ namespace NAMU_Template.Data_Export
                 dataLabels.NumberFormat = "0.00%";
             }
             percentageChart.HasTitle = true;
-            percentageChart.ChartTitle.Text = "Percentage ATC3 by ATCAMClass & ATC3";
+            percentageChart.ChartTitle.Text = "Percentage ATC3 by AMClass & ATC3";
             percentageChart.HasLegend = true;
             percentageChart.Legend.IncludeInLayout = true;
             percentageChart.Legend.Position = Excel.XlLegendPosition.xlLegendPositionBottom;
@@ -745,16 +786,16 @@ namespace NAMU_Template.Data_Export
 
         public static void PopulateATCPivotTableAndGraphs(Excel.Workbook workbook)
         {
-            Excel.Worksheet substanceSheet = workbook.Worksheets["Substance Sheet"];
+            Excel.Worksheet substanceSheet = workbook.Worksheets[SUBSTANCE_DATA_SHEET_NAME];
             Excel.Range dataRange = substanceSheet.UsedRange;
 
             Excel.PivotCache pivotCache = workbook.PivotCaches().Create(
                 Excel.XlPivotTableSourceType.xlDatabase, dataRange);
             Excel.Worksheet pivotSheet = workbook.Sheets.Add();
-            pivotSheet.Name = "ATB Data";
+            pivotSheet.Name = SUBSTANCE_ATC3_DATA_SHEET_NAME;
 
             Excel.PivotTable pivotTable = pivotSheet.PivotTables().Add(
-                pivotCache, pivotSheet.Range["A1"], "ATCPivotTable");
+                pivotCache, pivotSheet.Range["A1"], ATC3_TABLE_NAME);
 
             pivotTable.PivotFields("Year").Orientation = Excel.XlPivotFieldOrientation.xlRowField;
             pivotTable.PivotFields("AM_Class").Orientation = Excel.XlPivotFieldOrientation.xlColumnField;
@@ -871,7 +912,7 @@ namespace NAMU_Template.Data_Export
                 "Market_Authorization_Holder","Generics","Year_Authorization","Year_Withdrawal", "PKG", "DDD", "DID"
             };
 
-            var worksheetName = "Package Sheet";
+            var worksheetName = PRODUCT_DATA_SHEET_NAME;
             ProcessAndExportProductData(productConsumptionData, productData, availData, workbook, headers, worksheetName);
             Debug.WriteLine($"Exiting ExportProductConsumption: {DateTime.Now}.");
         }
@@ -1300,3 +1341,4 @@ namespace NAMU_Template.Data_Export
         //}
     }
 }
+
