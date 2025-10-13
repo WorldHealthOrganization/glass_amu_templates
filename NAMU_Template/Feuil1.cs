@@ -221,7 +221,7 @@ namespace NAMU_Template
                 // Show the loading dialog
                 CustomLoadingBox.Show("Calculation in progress, please wait...");
 
-                bool success = PerformCalculation();
+                bool success = PerformCalculation(true);
                 if (!success)
                 {
                     return;
@@ -240,7 +240,7 @@ namespace NAMU_Template
             }
 
         }
-        private bool PerformCalculation()
+        private bool PerformCalculation(bool showMessages)
         {
             try
             {
@@ -250,7 +250,11 @@ namespace NAMU_Template
                     Excel.Worksheet availabilityDataSheet = LoadWorkSheet("Availability Data");
                     if (!TryParseAvailabilityData(availabilityDataSheet, out List<DataAvailability> availData))
                     {
-                        MessageBox.Show("Availability data parsing failed or returned no data.");
+
+                        if (showMessages)
+                        {
+                            MessageBox.Show("Availability data parsing failed or returned no data.");
+                        } 
                         return false;
                     }
                     SharedData.AvailData = availData;
@@ -261,7 +265,10 @@ namespace NAMU_Template
                     Excel.Worksheet populationDataSheet = LoadWorkSheet("Population Data");
                     if (!TryParsePopulationData(populationDataSheet, SharedData.AvailData, out List<Population> popYears))
                     {
-                        MessageBox.Show("No population data have been provided.");
+                        if (showMessages)
+                        {
+                            MessageBox.Show("No population data have been provided.");
+                        }
                         return false;
                     }
                     SharedData.PopYears = popYears;
@@ -278,12 +285,15 @@ namespace NAMU_Template
 
                 if (years.Length < 0)
                 {
-                    MessageBox.Show(
-                        "The number of years of data is not valid. Each year should be repeated three times: Total sector, Community sector, and Hospital sector even if you are not providing data for all three sectors.",
-                        "Invalid Data",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Warning
-                    );
+                    if (showMessages)
+                    {
+                        MessageBox.Show(
+                            "The number of years of data is not valid. Each year should be repeated three times: Total sector, Community sector, and Hospital sector even if you are not providing data for all three sectors.",
+                            "Invalid Data",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Warning
+                        );
+                    }
                     return false;
                 }
 
@@ -295,7 +305,10 @@ namespace NAMU_Template
                 // Show errors if any exist
                 if (es.Errors.Any())
                 {
-                    MessageBox.Show(string.Join("\n", es.Errors.Distinct()));
+                    if (showMessages)
+                    {
+                        MessageBox.Show(string.Join("\n", es.Errors.Distinct()));
+                    }
                 }
 
                 return true;
@@ -320,8 +333,9 @@ namespace NAMU_Template
                 CustomLoadingBox.Show("Export in progress, please wait...");
 
                 // Execute your logic asynchronously
-                if (!PerformCalculation()) // Call the extracted calculation method
+                if (!PerformCalculation(false)) // Call the extracted calculation method
                 {
+                    MessageBox.Show($"Data are not exported due to error during the calculation.");
                     return;
                 }
                 ExportConsumption.ExportCalculateUseConsumption(availData);
