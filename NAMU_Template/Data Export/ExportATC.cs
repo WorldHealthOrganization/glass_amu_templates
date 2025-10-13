@@ -1026,6 +1026,15 @@ namespace NAMU_Template.Data_Export
         {
 
             Dictionary<string, Product> productDict = productList.ToDictionary(pr => pr.UniqueId);
+            //Dictionary<string, Product> productDict = new Dictionary<string, Product>();
+            //foreach(Product pr in productList)
+            //{
+            //    if (productDict.ContainsKey(pr.UniqueId))
+            //    {
+            //        throw new Exception($"Duplicate key: {pr.UniqueId}");
+            //    }
+            //    productDict[pr.UniqueId] = pr;
+            //}
 
 
             var availFiltered = new List<Tuple<string, int, HealthSector, string, DataAvailability>>();

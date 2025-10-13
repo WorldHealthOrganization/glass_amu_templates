@@ -147,9 +147,18 @@ namespace NAMU_Template.Models
                 }
                 else
                 {
-                    if (ProductLineNo == 0 || string.IsNullOrEmpty(ProductId))
+                    if (ProductLineNo == 0 || string.IsNullOrEmpty(ProductId)) // manage to generate a unique ID for problematic product
                     {
-                        return "UNDEFINED";
+                        Random random = new Random();
+                        string randomNumber = random.Next(1, 10000).ToString();
+                        if (string.IsNullOrEmpty(ProductId))
+                        {
+                            InternalCachedProductUniqueId = $"{ProductLineNo}|NOPID|{randomNumber}";
+                        } else
+                        {
+                            InternalCachedProductUniqueId = $"{ProductLineNo}|{ProductId}|{randomNumber}";
+                        }
+                        return InternalCachedProductUniqueId;
                     }
                     else
                     {
@@ -356,8 +365,9 @@ namespace NAMU_Template.Models
                 this.Status = EntityStatus.ERROR;
             }
 
-            if (this.Status > EntityStatus.OK && !force)
+            if (this.Status > EntityStatus.INFO && !force) // raising the level from >OK to >INFO to return before validation
             {
+                this.ProductId = (string)DataFieldValues[PRODUCT_ID_FIELD].Value; // this is needed to get the uniqueId properly
                 return;
             }
 
