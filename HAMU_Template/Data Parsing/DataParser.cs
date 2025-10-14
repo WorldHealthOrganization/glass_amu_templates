@@ -130,9 +130,6 @@ namespace HAMU_Template.Data_Parsing
     public static class AvailabilityStructureActivityDataParser
     {
 
-        //Parsing and Processing the Availability data and storing them in an object of list type <Class - Availability> ..!
-        //COUNTRY       HOSPITAL      YEAR      A07AA       D01BA      J01     J02     J04     J05     P01AB   P01B    LEVEL
-
         public static bool ParseAvailability(Worksheet workSheet)
         {
             List<Availability> availabilityData = new List<Availability>();
@@ -1651,7 +1648,7 @@ namespace HAMU_Template.Data_Parsing
                     if (avData != null)
                     {
                         // 🚀 Extract values from `values[,]` instead of accessing Excel cells
-                        int baseColIndex = TemplateFormat.PRODUCT_DATA_SHEET_CONS_START_COL_IDX + yCol;
+                        int baseColIndex = TemplateFormat.SUBSTANCE_DATA_SHEET_CONS_START_COL_IDX + yCol;
 
                         substCons.Units = ExtractConsumptionValue(values, index, baseColIndex, es, $"UNITS {year}", lineNo, lastColumn);
                         substCons.CalculateDDD();
