@@ -12,52 +12,44 @@ using Excel = Microsoft.Office.Interop.Excel;
 
 namespace HAMU_Template.Data_Export
 {
+
     public class ExporterConsumption
     {
 
-        static string FIELD_COUNTRY = "COUNTRY";
-        static string FIELD_YEAR = "YEAR";
-        static string FIELD_HOSPITAL = "HOSPITAL";
-        static string FIELD_LEVEL = "LEVEL";
-        static string FIELD_AM_CLASS = "AM_CLASS";
-        static string FIELD_ATC_CLASS = "ATC_CLASS";
-        static string FIELD_AWARE = "AWARE";
-        static string FIELD_MEML = "MEML";
-        static string FIELD_PAEDIATRICS = "PAEDIATRICS";
-        static string FIELD_ATC2 = "ATC2";
-        static string FIELD_ATC3 = "ATC3";
-        static string FIELD_ATC4 = "ATC4";
-        static string FIELD_ATC5 = "ATC5";
-        static string FIELD_ROA = "ROA";
-        static string FIELD_DDD = "DDD";
-        static string FIELD_DAD = "DAD";
-        static string FIELD_DBD = "DBD";
+        static readonly string FIELD_COUNTRY = "COUNTRY";
+        static readonly string FIELD_YEAR = "YEAR";
+        static readonly string FIELD_HOSPITAL = "HOSPITAL";
+        static readonly string FIELD_LEVEL = "LEVEL";
+        static readonly string FIELD_AM_CLASS = "AM_CLASS";
+        static readonly string FIELD_ATC_CLASS = "ATC_CLASS";
+        static readonly string FIELD_AWARE = "AWARE";
+        static readonly string FIELD_MEML = "MEML";
+        static readonly string FIELD_PAEDIATRICS = "PAEDIATRICS";
+        static readonly string FIELD_ATC2 = "ATC2";
+        static readonly string FIELD_ATC3 = "ATC3";
+        static readonly string FIELD_ATC4 = "ATC4";
+        static readonly string FIELD_ATC5 = "ATC5";
+        static readonly string FIELD_ROA = "ROA";
+        static readonly string FIELD_DDD = "DDD";
+        static readonly string FIELD_DAD = "DAD";
+        static readonly string FIELD_DBD = "DBD";
 
-        static string FIELD_TOTAL_DBD = "Total DBD";
-        static string FIELD_TOTAL_DAD = "Total DAD";
-        static string FIELD_TOTAL_DDD = "Total DDD";
+        static readonly string FIELD_TOTAL_DBD = "Total DBD";
+        static readonly string FIELD_TOTAL_DAD = "Total DAD";
+        static readonly string FIELD_TOTAL_DDD = "Total DDD";
 
 
-        static string[] DataHeader = { FIELD_COUNTRY, FIELD_YEAR, FIELD_HOSPITAL, FIELD_LEVEL, FIELD_AM_CLASS, FIELD_ATC_CLASS, FIELD_AWARE, 
+        static readonly string[] DataHeader = { FIELD_COUNTRY, FIELD_YEAR, FIELD_HOSPITAL, FIELD_LEVEL, FIELD_AM_CLASS, FIELD_ATC_CLASS, FIELD_AWARE, 
             FIELD_MEML, FIELD_PAEDIATRICS, FIELD_ATC2, FIELD_ATC3, FIELD_ATC4, FIELD_ATC5, FIELD_ROA, FIELD_DDD, FIELD_DAD, FIELD_DBD};
-
-
-        private Excel.Worksheet Atc4Sheet;
-        private Excel.PivotTable Atc4PivotTable;
-        private Excel.Chart Atc4AbsoluteChart;
-        private Excel.Chart Atc4RelativeChart;
-        private Excel.Worksheet AWRSheet;
-        private Excel.PivotTable AWRPivotTable;
-        private Excel.Chart AWRAbsoluteChart;
-        private Excel.Chart AWRRelativeChart;
-        private Excel.Worksheet DataSheet;
 
         private static readonly string DATA_SHEET_NAME = "Use Data";
         private static readonly int DATA_SHEET_IDX = 1;
+        private static readonly string ATB_DATA_SHEET_NAME = "Antibiotic Use Data";
+        private static readonly int ATB_DATA_SHEET_IDX = 2;
         private static readonly string ATC4_SHEET_NAME = "ATC4 results";
-        private static readonly int ATC4_SHEET_IDX = 2;
+        private static readonly int ATC4_SHEET_IDX = 3;
         private static readonly string AWR_SHEET_NAME = "AWaRe results";
-        private static readonly int AWR_SHEET_IDX = 3;
+        private static readonly int AWR_SHEET_IDX = 4;
 
         private static readonly string ATC4_PIVOT_TABLE_NAME = "ATC4PivotTable";
         private static readonly string AWR_PIVOT_TABLE_NAME = "AWRPivotTable";
@@ -106,6 +98,36 @@ namespace HAMU_Template.Data_Export
             { INDIC_DDD , FIELD_TOTAL_DDD },
         };
 
+        // Define the AWR order A → W → R → N**
+        static private readonly Dictionary<string, int> AWR_ORDERS = new Dictionary<string, int>
+            {
+                { "A", 1 },
+                { "W", 2 },
+                { "R", 3 },
+                { "N", 4 }
+            };
+
+        // Define the AWR colors
+        static private readonly Dictionary<string, int> AWR_COLORS = new Dictionary<string, int>
+            {
+                { "A", System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Green) },      // Access: Green
+                { "W", System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Orange) },     // Watch: Light Orange
+                { "R", System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Red) },        // Reserve: Red
+                { "N", System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Gray) }        // Not classified / Not recommended: Grey
+            };
+
+        private Excel.Worksheet Atc4Sheet;
+        private Excel.PivotTable Atc4PivotTable;
+        private Excel.Chart Atc4AbsoluteChart;
+        private Excel.Chart Atc4RelativeChart;
+        private Excel.Worksheet AWRSheet;
+        private Excel.PivotTable AWRPivotTable;
+        private Excel.Chart AWRAbsoluteChart;
+        private Excel.Chart AWRRelativeChart;
+        private Excel.Worksheet DataSheet;
+        private Excel.Worksheet AtbDataSheet;
+
+
         private string SelectedATC4PivotTableIndicator;
         private string Atc4PivotCurrentIndicName;
         private string Atc4PivotCurrentTotalIndicName;
@@ -118,13 +140,18 @@ namespace HAMU_Template.Data_Export
         private string AWRPivotOldIndicName;
         private string AWRPivotOldTotalIndicName;
 
+        
+
         public ExporterConsumption()
         {
         }
 
         public void ExportAtcConsumption(List<AtcConsumption> atcConsData)
         {
-            Excel.Application excelApp = new Excel.Application();
+            // Excel.Application excelApp = new Excel.Application();
+
+            // Get Open Excel
+            Excel.Application excelApp = (Excel.Application)System.Runtime.InteropServices.Marshal.GetActiveObject("Excel.Application");
 
             // Create a new workbook
             Excel.Workbook workbook = excelApp.Workbooks.Add();
@@ -132,6 +159,7 @@ namespace HAMU_Template.Data_Export
 
             // Create Data Sheet
             DataSheet =  CreateDataSheet(workbook, atcConsData);
+            AtbDataSheet = CreateAtbDataSheet(workbook);
 
             // Create ATC4 Chart Sheet
             Atc4Sheet = CreateATC4Sheet(workbook);
@@ -140,7 +168,7 @@ namespace HAMU_Template.Data_Export
 
             // Create AWARE Chart Sheet
             AWRSheet = CreateAWRSheet(workbook); 
-            AWRPivotTable = CreateAwrPivotTable(workbook, AWRSheet, DataSheet);
+            AWRPivotTable = CreateAwrPivotTable(workbook, AWRSheet, AtbDataSheet);
             CreateAwrPivotCharts(workbook, AWRSheet, out AWRAbsoluteChart, out AWRRelativeChart);
 
             excelApp.Visible = true;
@@ -198,6 +226,34 @@ namespace HAMU_Template.Data_Export
                 range.Value = batch2D; // Write the 2D array to the range
                 row += batch2D.GetLength(0);
             }
+            return ws;
+        }
+
+        private Excel.Worksheet CreateAtbDataSheet(Excel.Workbook wb)
+        {
+            //create a worksheet with AWaRe valid products: products with ATB AM Class
+            Excel.Worksheet ws = (Excel.Worksheet)wb.Sheets.Add(Type.Missing, wb.Sheets[ATB_DATA_SHEET_IDX]);
+            ws.Name = ATB_DATA_SHEET_NAME;
+            
+            Excel.Worksheet allDataSheet = wb.Worksheets[DATA_SHEET_NAME];
+            Excel.Range filteredRange = allDataSheet.UsedRange;
+
+            filteredRange.AutoFilter(
+                    Field: 5,               // Column AM CLASS
+                    Criteria1: "ATB",       // Filter on value ATB
+                    Operator: Excel.XlAutoFilterOperator.xlAnd,
+                    VisibleDropDown: true
+                );
+
+
+            Excel.Range filteredAtbRange = filteredRange.SpecialCells(Excel.XlCellType.xlCellTypeVisible);
+
+            // Copy the filtered data into the Aware Substance Data.
+            filteredAtbRange.Copy(ws.Cells[1, 1]);
+
+            // Remove the filter from substance data sheet
+            allDataSheet.AutoFilterMode = false;
+
             return ws;
         }
 
@@ -410,6 +466,7 @@ namespace HAMU_Template.Data_Export
             var cellIndicLabel = ws.Cells[1, 1] as Range;
             cellIndicLabel.Value = "Indicator:";
             cellIndicLabel.Font.Bold = true;
+            cellIndicLabel.ColumnWidth = 9;
 
             var validIndics = string.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator, INDIC_TXT_LIST);
 
@@ -480,7 +537,8 @@ namespace HAMU_Template.Data_Export
 
             FormatChartTitle(AWRAbsoluteChart, "Total Use by Year", INDIC_INDIC_TXT_MAP[SelectedAWRPivotTableIndicator]);
             FormatChartTitle(AWRRelativeChart, "Relative Use by Year", INDIC_INDIC_TXT_MAP[SelectedAWRPivotTableIndicator]);
-
+            ColorAWRChartSeries(AWRAbsoluteChart);
+            ColorAWRChartSeries(AWRRelativeChart);
             MoveSheetCharts(AWR_SHEET_NAME);
         }
 
@@ -498,7 +556,34 @@ namespace HAMU_Template.Data_Export
             // Add the Year in row and ATC4 in colum fields.
             pivotTable.PivotFields(FIELD_YEAR).Orientation = Excel.XlPivotFieldOrientation.xlRowField;
             pivotTable.PivotFields(FIELD_AWARE).Orientation = Excel.XlPivotFieldOrientation.xlColumnField;
+            pivotTable.PivotFields(FIELD_AWARE).ShowAllItems = true;
 
+            // Add missing WAR categories if any
+
+            HashSet<string> foundAWR = new HashSet<string>();
+            HashSet<string> allAWR = new HashSet<string>() { "A", "W", "R", "N" };
+            PivotField awrField = pivotTable.PivotFields(FIELD_AWARE);
+            foreach (PivotItem pi in awrField.PivotItems())
+            {
+                foundAWR.Add(pi.Name);
+            }
+            HashSet<string> noFoundAWR = allAWR;
+            noFoundAWR.ExceptWith(foundAWR);
+            if (noFoundAWR.Count > 0)
+            {
+                
+                foreach (string awr in noFoundAWR)
+                {
+                    awrField.PivotItems().Add(awr);
+                }
+                
+                pivotTable.PivotFields(FIELD_AWARE).PivotItems("A").Position = 1;
+                pivotTable.PivotFields(FIELD_AWARE).PivotItems("W").Position = 2;
+                pivotTable.PivotFields(FIELD_AWARE).PivotItems("R").Position = 3;
+                pivotTable.PivotFields(FIELD_AWARE).PivotItems("N").Position = 4;
+            }
+
+       
             // Add the data field as sum DBD.
             var indicField = pivotTable.PivotFields(FIELD_DBD) as PivotField;
             pivotTable.AddDataField(indicField, FIELD_TOTAL_DBD, Excel.XlConsolidationFunction.xlSum);
@@ -508,8 +593,7 @@ namespace HAMU_Template.Data_Export
             AWRPivotCurrentTotalIndicName = FIELD_TOTAL_DBD;
 
 
-            // Add additional filters.
-            pivotTable.PivotFields(FIELD_AM_CLASS).Orientation = Excel.XlPivotFieldOrientation.xlPageField;
+            // Add additional filters
             pivotTable.PivotFields(FIELD_ROA).Orientation = Excel.XlPivotFieldOrientation.xlPageField;
             pivotTable.PivotFields(FIELD_PAEDIATRICS).Orientation = Excel.XlPivotFieldOrientation.xlPageField;
 
@@ -519,6 +603,23 @@ namespace HAMU_Template.Data_Export
             pivotTable.RefreshTable();
 
             return pivotTable;
+        }
+
+        private void ColorAWRChartSeries(Excel.Chart chart)
+        {
+            
+            Excel.SeriesCollection seriesCollection = (Excel.SeriesCollection)chart.SeriesCollection();
+            
+            // Set the colors of the AWR categories
+            foreach (Series series in seriesCollection)
+            {
+                var t = series.Name;
+                // apply color based on category
+                if (AWR_COLORS.ContainsKey(series.Name))
+                {
+                    series.Format.Fill.ForeColor.RGB = AWR_COLORS[series.Name];
+                }
+            }
         }
 
         private void CreateAwrPivotCharts(Excel.Workbook workbook, Excel.Worksheet sheet, out Excel.Chart absoluteChart, out Excel.Chart relativeChart)
@@ -533,7 +634,7 @@ namespace HAMU_Template.Data_Export
             chartObj1.Name = AWR_ABSOLUTE_CHART_NAME;
             Excel.Chart chart1 = chartObj1.Chart;
 
-            chart1.SetSourceData(AWRPivotTable.TableRange1, Type.Missing);
+            chart1.SetSourceData(AWRPivotTable.TableRange1, XlRowCol.xlColumns );
             chart1.ChartType = Excel.XlChartType.xlBarStacked;
             chart1.ShowAllFieldButtons = false;
 
@@ -542,6 +643,7 @@ namespace HAMU_Template.Data_Export
             var bt = "Total Use by Year";
             var st = INDIC_INDIC_TXT_MAP[SelectedAWRPivotTableIndicator];
             FormatChartTitle(chart1, bt, st);
+            ColorAWRChartSeries(chart1);
 
 
             // Relative chart
@@ -559,52 +661,7 @@ namespace HAMU_Template.Data_Export
             bt = "Relative Use by Year";
             st = INDIC_INDIC_TXT_MAP[SelectedAWRPivotTableIndicator];
             FormatChartTitle(chart2, bt, st);
-
-            // Set the colors of the AWR categories
-
-            // Sort the seriesData list to enforce the order A → W → R → N**
-            Dictionary<string, int> AwrOrders = new Dictionary<string, int>
-            {
-                { "A", 1 },
-                { "W", 2 },
-                { "R", 3 },
-                { "N", 4 }
-            };
-
-            // Define colors
-            Dictionary<string, int> AwrColors = new Dictionary<string, int>
-            {
-                { "A", System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Green) },      // Access: Green
-                { "W", System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Orange) },     // Watch: Light Orange
-                { "R", System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Red) },        // Reserve: Red
-                { "N", System.Drawing.ColorTranslator.ToOle(System.Drawing.Color.Gray) }        // Not classified / Not recommended: Grey
-            };
-
-            Excel.SeriesCollection seriesCollection = (Excel.SeriesCollection)chart1.SeriesCollection();
-            foreach (Excel.Series series in seriesCollection)
-            {
-                var t = series.Name;
-                // apply color based on category
-                if (AwrColors.ContainsKey(series.Name))
-                {
-                    series.Format.Fill.ForeColor.RGB = AwrColors[series.Name];
-                    //var order = AwrOrders[series.Name];
-                    //var oldOrder = series.PlotOrder;
-                    //series.PlotOrder = order; // get a crash when setting PlotOrder
-                }
-            }
-
-            seriesCollection = (Excel.SeriesCollection)chart2.SeriesCollection();
-            foreach (Excel.Series series in seriesCollection)
-            {
-                var t = series.Name;
-                // apply color based on category
-                if (AwrColors.ContainsKey(series.Name))
-                {
-                    series.Format.Fill.ForeColor.RGB = AwrColors[series.Name];
-                    // series.PlotOrder = AwrOrders[series.Name];
-                }
-            }
+            ColorAWRChartSeries(chart2);
 
             absoluteChart = chart1;
             relativeChart = chart2;
