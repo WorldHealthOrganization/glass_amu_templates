@@ -131,7 +131,8 @@ namespace HAMU_Template
         //Boolean check values for validation of the data..!
         bool checkValidation = false;
 
-        Excel.Application excelApp = new Excel.Application();
+        // Get Open Excel
+        Excel.Application excelApp = (Excel.Application)System.Runtime.InteropServices.Marshal.GetActiveObject("Excel.Application");
 
         public Excel.Range StatusCell;
         public static int optionValue = 0;

@@ -18,7 +18,8 @@ namespace NAMU_Template.Data_Export
             var productConsumptionData = SharedData.ProductConsummptionData;
             var productData = SharedData.Products;
             // Create a new Excel application and a new workbook
-            var excelApp = new Excel.Application();
+            // Get Open Excel
+            Excel.Application excelApp = (Excel.Application)System.Runtime.InteropServices.Marshal.GetActiveObject("Excel.Application");
             Excel.Workbook workbook = excelApp.Workbooks.Add();
             //Call methods to export ATC consumption
             ExportATC.ExportATCConsumption(atcConsumptionData, availData, workbook);

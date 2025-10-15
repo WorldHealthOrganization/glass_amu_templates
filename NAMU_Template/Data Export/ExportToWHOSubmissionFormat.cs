@@ -153,7 +153,8 @@ namespace NAMU_Template.Data_Export
             try
             {
                 //excelApp = Marshal.GetActiveObject("Excel.Application") as Microsoft.Office.Interop.Excel.Application;
-                excelApp = new Microsoft.Office.Interop.Excel.Application();
+                // Get Open Excel
+                excelApp = (Microsoft.Office.Interop.Excel.Application)System.Runtime.InteropServices.Marshal.GetActiveObject("Excel.Application");
                 // Open the workbook
                 workbook = excelApp.Workbooks.Open(filePath);
 
