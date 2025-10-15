@@ -265,6 +265,7 @@ namespace HAMU_Template.Data_Export
             var cellIndicLabel = ws.Cells[1,1] as Range;
             cellIndicLabel.Value = "Indicator:";
             cellIndicLabel.Font.Bold = true;
+            cellIndicLabel.ColumnWidth = 9;
 
             var validIndics = string.Join(CultureInfo.CurrentCulture.TextInfo.ListSeparator, INDIC_TXT_LIST);
 
