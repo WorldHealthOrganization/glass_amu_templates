@@ -215,25 +215,25 @@ namespace HAMU_Template
         {
             var selectedRadio = sender as RadioButton;
             StatusCell = Cells.Range["D4"];
-
+            int newValue;
             if (selectedRadio.Text == "Products")
             {
-                optionValue = OPTION_PRODUCTS;
+                newValue = OPTION_PRODUCTS;
             }
             else
             {
-                optionValue = OPTION_SUBSTANCES;
+                newValue = OPTION_SUBSTANCES;
             }
+            if (newValue==optionValue)
+            {
+                return;
+            }
+            optionValue = newValue;
+            checkValidation = false;
         }
 
         private void Calculate_Click(object sender, EventArgs e)
         {
-            List<int> years;
-            Product product = new Product();
-            Substance substance = new Substance();
-            dynamic consumptionData;
-            dynamic calculatedDDDConsumptions;
-
             if (optionValue == 0)
             {
                 MessageBox.Show("Please select an appropriate option.");
@@ -243,6 +243,7 @@ namespace HAMU_Template
             if (!checkValidation)
             {
                 MessageBox.Show("Please validate the data first");
+                return;
             }
 
             if (optionValue == 1)
